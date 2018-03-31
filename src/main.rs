@@ -23,7 +23,7 @@ fn main() {
         None => load_config("".to_string())
     };
 
-    let keys: [&str;3] = ["api_key", "user_name", "pipeline"];
+    let keys: [&str;3] = ["token", "user_name", "pipeline"];
 
     match keys.iter().position( |key| {
         !settings.contains_key(&key.to_string())
@@ -32,7 +32,7 @@ fn main() {
             keys[i],keys[i].to_uppercase()),
         None    => {
             println!("{:?}",settings);
-            let mut client = set_up_client(&settings["api_key"]);
+            let mut client = set_up_client(&settings["token"]);
             let runs = get_runs(&mut client);
             println!("{}", runs)
 
