@@ -6,3 +6,4 @@ authors = ["Martin Becker <mbeckerwork@gmail.com>"]
 [dependencies]
 config = "0.8"
 curl = "0.4.11"
+serde_json = "1.0"
