@@ -33,7 +33,8 @@ fn main() {
         None    => {
             println!("{:?}",settings);
             let mut client = set_up_client(&settings["api_key"]);
-            get_runs(&mut client);
+            let runs = get_runs(&mut client);
+            println!("{}", runs)
 
         }
     };
@@ -64,11 +65,18 @@ fn load_config(config_file: String) -> Config {
 }
 
 
-fn get_runs(curl: &mut Easy) { // -> String {
+
+fn get_runs(curl: &mut Easy)  -> String {
+    get(curl, url_runs())
+
+}
+
+fn get(curl: &mut Easy, url: String) -> String {
     use std::str;
+
     let mut data = Vec::new();
 
-    curl.url(runs_url().as_str()).unwrap();
+    curl.url(url.as_str()).unwrap();
     {
         let mut transfer = curl.transfer();
         transfer.write_function(|new_data| {
@@ -77,12 +85,11 @@ fn get_runs(curl: &mut Easy) { // -> String {
         }).unwrap();
         transfer.perform().unwrap();
     }
-    println!("{:?}",str::from_utf8(&data).unwrap());
-    // data.to_string()
-    // dst.to_string()
+    str::from_utf8(&data).unwrap().to_string()
 }
 
-fn runs_url() -> String {
+
+fn url_runs() -> String {
     build_url("runs")
 }
 
