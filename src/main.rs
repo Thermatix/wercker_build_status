@@ -12,6 +12,7 @@ use std::collections::HashMap;
 use curl::easy::Easy;
 
 const API_VERSION: &str = "v3";
+const CONFIG_PREFIX: &str = "WERCKER";
 
 type Config = HashMap<String, String>;
 
@@ -23,17 +24,18 @@ fn main() {
         None => load_config("".to_string())
     };
 
-    let keys: [&str;3] = ["token", "user_name", "pipeline"];
+    let keys: [&str;3] = ["token", "author", "pipeline_id"];
 
     match keys.iter().position( |key| {
         !settings.contains_key(&key.to_string())
     }) {
-        Some(i) => println!( "No `{}` detected in config or env (WERCKER_{}) variables",
-            keys[i],keys[i].to_uppercase()),
+        Some(i) => println!( "No `{}` detected in config or env ({}_{}) variables",
+            keys[i],CONFIG_PREFIX ,keys[i].to_uppercase()),
         None    => {
             println!("{:?}",settings);
             let mut client = set_up_client(&settings["token"]);
-            let runs = get_runs(&mut client);
+            let runs = get_runs(&mut client,&settings["author"],
+                                &settings["pipeline_id"]);
             println!("{}", runs)
 
         }
@@ -60,15 +62,14 @@ fn load_config(config_file: String) -> Config {
     if config_file != "" {
         settings.merge(config::File::with_name(config_file.as_str())).unwrap();
     }
-    settings.merge(config::Environment::with_prefix("WERCKER")).unwrap();
+    settings.merge(config::Environment::with_prefix(CONFIG_PREFIX)).unwrap();
     settings.try_into::<Config>().unwrap()
 }
 
 
 
-fn get_runs(curl: &mut Easy)  -> String {
-    get(curl, url_runs())
-
+fn get_runs(curl: &mut Easy, author: &String, pipline_id: &String)  -> String {
+    get(curl, url_runs(&author, &pipline_id))
 }
 
 fn get(curl: &mut Easy, url: String) -> String {
@@ -89,12 +90,13 @@ fn get(curl: &mut Easy, url: String) -> String {
 }
 
 
-fn url_runs() -> String {
-    build_url("runs")
+fn url_runs(_author: &String, pipline_id: &String) -> String {
+    // format!("{}?author={}&pipelineId={}",build_url("runs"),&author,&pipline_id)
+    format!("{}?pipelineId={}",build_url("runs"),&pipline_id)
 }
 
 fn build_url(endpoint: &str) -> String {
-    format!("https://app.wercker.com/api/{}/{}",API_VERSION,endpoint)
+    format!("https://app.wercker.com/api/{}/{}",API_VERSION, endpoint)
 }
 
 // fn process(){
