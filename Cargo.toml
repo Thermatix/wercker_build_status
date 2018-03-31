@@ -1,0 +1,8 @@
+[package]
+name = "wercker_build_status"
+version = "0.1.0"
+authors = ["Martin Becker <mbeckerwork@gmail.com>"]
+
+[dependencies]
+config = "0.8"
+curl = "0.4.11"
