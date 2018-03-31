@@ -65,7 +65,9 @@ fn load_config(config_file: String) -> Config {
 
 
 fn get_runs(curl: &mut Easy) { // -> String {
+    use std::str;
     let mut data = Vec::new();
+
     curl.url(runs_url().as_str()).unwrap();
     {
         let mut transfer = curl.transfer();
@@ -75,7 +77,7 @@ fn get_runs(curl: &mut Easy) { // -> String {
         }).unwrap();
         transfer.perform().unwrap();
     }
-    println!("{:?}", data);
+    println!("{:?}",str::from_utf8(&data).unwrap());
     // data.to_string()
     // dst.to_string()
 }
