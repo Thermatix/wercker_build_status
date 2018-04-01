@@ -1,6 +1,7 @@
 extern crate config;
 extern crate curl;
-// extern crate serde_json;
+extern crate serde_json;
+
 // #[macro_use]
 // extern crate serde_derive;
 
@@ -11,7 +12,12 @@ use std::collections::HashMap;
 
 use curl::easy::Easy;
 
+use serde_json::{Value, Error};
+
 const API_VERSION: &str = "v3";
+const CONFIG_PREFIX: &str = "WERCKER";
+// const LAST_BUILD: usize = 18;
+const FIRST: usize = 0;
 
 type Config = HashMap<String, String>;
 
@@ -23,23 +29,30 @@ fn main() {
         None => load_config("".to_string())
     };
 
-    let keys: [&str;3] = ["api_key", "user_name", "pipeline"];
+    let keys: [&str;3] = ["token", "author", "pipeline_id"];
 
     match keys.iter().position( |key| {
         !settings.contains_key(&key.to_string())
     }) {
-        Some(i) => println!( "No `{}` detected in config or env (WERCKER_{}) variables",
-            keys[i],keys[i].to_uppercase()),
+        Some(i) => println!( "No `{}` detected in config or env ({}_{}) variables",
+            keys[i], CONFIG_PREFIX, keys[i].to_uppercase()),
         None    => {
-            println!("{:?}",settings);
-            let mut client = set_up_client(&settings["api_key"]);
-            let runs = get_runs(&mut client);
-            println!("{}", runs)
+            let mut client = set_up_client(&settings["token"]);
+            let runs: Value = serde_json::from_str(get_runs(&mut client,&settings["author"],
+                                &settings["pipeline_id"]).as_str()).unwrap();
+            let runs_len = runs.as_array().iter().len();
+            println!("{}",runs[FIRST]);
+            // println!("{}",runs);
+            // println!("{}", runs[( IDX + runs_len - 1) % runs_len]);
+            // match runs[FIRST]["status"] {
+            //     "finished" => println!("{}",runs[FIRST]["result"]),
+            //     _ => println!("*{}",runs[FIRST]["result"])
+            // }
+            // println!("{:?}:{}", runs[FIRST]["status"],runs[FIRST]["result"]);
+            println!("{}",runs[FIRST]["result"]);
 
         }
     };
-    
-    
 }
 
 fn set_up_client(token: &String) -> Easy {
@@ -55,20 +68,20 @@ fn set_up_client(token: &String) -> Easy {
 }
 
 fn load_config(config_file: String) -> Config {
-    println!("{}",config_file);
     let mut settings = config::Config::default();
     if config_file != "" {
         settings.merge(config::File::with_name(config_file.as_str())).unwrap();
     }
-    settings.merge(config::Environment::with_prefix("WERCKER")).unwrap();
+    settings.merge(config::Environment::with_prefix(CONFIG_PREFIX)).unwrap();
     settings.try_into::<Config>().unwrap()
 }
 
 
 
-fn get_runs(curl: &mut Easy)  -> String {
-    get(curl, url_runs())
-
+fn get_runs(curl: &mut Easy, author: &String, pipline_id: &String)  -> String {
+    let url = url_runs(&author, &pipline_id);
+    println!("{}",&url);
+    get(curl,url )
 }
 
 fn get(curl: &mut Easy, url: String) -> String {
@@ -89,12 +102,14 @@ fn get(curl: &mut Easy, url: String) -> String {
 }
 
 
-fn url_runs() -> String {
-    build_url("runs")
+fn url_runs(author: &String, pipline_id: &String) -> String {
+    // format!("{}?author={}&pipelineId={}",build_url("runs"),&author,&pipline_id)
+    format!("{}?author={}&pipelineId={}",build_url("runs"),&author,&pipline_id)
+    // format!("{}?pipelineId={}",build_url("runs"),&pipline_id)
 }
 
 fn build_url(endpoint: &str) -> String {
-    format!("https://app.wercker.com/api/{}/{}",API_VERSION,endpoint)
+    format!("https://app.wercker.com/api/{}/{}",API_VERSION, endpoint)
 }
 
 // fn process(){
