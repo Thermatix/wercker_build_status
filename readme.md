@@ -28,3 +28,17 @@ an example config file can be found in this repo's root dir.
 
 The tool can also pull info from the environment variables as well, just prefix
 the config options with `WERCKER_` and capitalize the key name.
+
+## output
+
+The output of the tool is like this:
+
+```
+status:result
+```
+an example being:
+
+```
+finished:failed
+```
+
