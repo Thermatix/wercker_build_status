@@ -11,6 +11,7 @@ pub fn set_up(token: &String) -> Easy {
     let mut easy = Easy::new();
     let mut list = List::new();
 
+    // add authorisation header to curl client
     list.append(&format!("Authorization: Bearer {}",token)).unwrap();
     easy.http_headers(list).unwrap();
     easy
@@ -26,8 +27,9 @@ fn get(curl: &mut Easy, url: String) -> String {
     use std::str;
 
     let mut data = Vec::new();
-
+    
     curl.url(url.as_str()).unwrap();
+    // add mechanism to transfer data recived data into a vec
     {
         let mut transfer = curl.transfer();
         transfer.write_function(|new_data| {
@@ -36,5 +38,6 @@ fn get(curl: &mut Easy, url: String) -> String {
         }).unwrap();
         transfer.perform().unwrap();
     }
+    // convert byte result into utf_8 string
     str::from_utf8(&data).unwrap().to_string()
 }
