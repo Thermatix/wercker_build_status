@@ -46,15 +46,17 @@ fn main() {
                 Some(run) => {
                     if &settings["tmux"] == &"true".to_string() {
                         match run.result.as_ref() {
-                            "failed"    => println!("#[fg=blue,bright]{}#[fg=white]:#[fg=red,bold]{}",&run.status,&run.result),
-                            "passed"    => println!("#[fg=blue,bright]{}#[fg=white]:#[fg=green,bold,bright]{}",&run.status,&run.result),
-                            _           => println!("#[fg=blue,bright]{}#[fg=white]:{}",&run.status,&run.result)
+                            "failed"    => println!("##[fg=red,bold]{}",&run.result),
+                            "passed"    => println!("#[fg=green,bold,bright]{}",&run.result),
+                            "aborted"    => println!("#[fg=yellow,bold,bright]{}",&run.result),
+                            _           => println!("#[fg=blue,bright]{}",&run.status)
                         }
                     } else {
                         match run.result.as_ref() {
-                            "failed"    => println!("{}:{}",&run.status.blue(),&run.result.red()),
-                            "passed"    =>  println!("{}:{}",&run.status.blue(),&run.result.green()),
-                            _           =>  println!("{}:{}",&run.status.blue(),&run.result)
+                            "failed"    => println!("{}",&run.result.red()),
+                            "passed"    =>  println!("{}",&run.result.green()),
+                            "aborted"    =>  println!("{}",&run.result.yellow()),
+                            _           =>  println!("{}",&run.status.blue(),)
                         }
                     }
                 },
