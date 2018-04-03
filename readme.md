@@ -11,6 +11,12 @@ for now, just clone the repo and do:
 cargo build --release
 ```
 
+you will need to have installed rust first, you can easily do this using rustup:
+
+```shell
+curl https://sh.rustup.rs -sSf | sh && rustup install stable
+```
+
 The binary will be in the `./target/release` folder which you can copy and move to more usable location.
 
 ## Config
