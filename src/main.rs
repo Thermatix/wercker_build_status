@@ -44,9 +44,16 @@ fn main() {
             }) {
                 // print out status and result
                 Some(run) => {
-                    match run.result.as_ref() {
-                        "failed" => println!("{}:{}",&run.status.blue(),&run.result.red()),
-                        _ => println!("{}:{}",&run.status.blue(),&run.result.green())
+                    if &settings["tmux"] == &"true".to_string() {
+                        match run.result.as_ref() {
+                            "failed" => println!("#[fg=blue]{}#[fg=white]:#[fg=red]{}",&run.status,&run.result),
+                            _ => println!("#[fg=blue]{}#[fg=white]:#[fg=green]{}",&run.status,&run.result)
+                        }
+                    } else {
+                        match run.result.as_ref() {
+                            "failed" => println!("{}:{}",&run.status.blue(),&run.result.red()),
+                            _ => println!("{}:{}",&run.status.blue(),&run.result.green())
+                        }
                     }
                 },
                 None => print!("{}","None Found")
