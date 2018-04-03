@@ -1,7 +1,7 @@
 # Wercker build status
 
 ## About
-This is a simple tool to make getting the status of the last running build.
+This is a simple tool to make getting the status of the last running build easy.
 
 ## installing
 
