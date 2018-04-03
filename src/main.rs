@@ -46,9 +46,9 @@ fn main() {
                 Some(run) => {
                     if &settings["tmux"] == &"true".to_string() {
                         match run.result.as_ref() {
-                            "failed"    => println!("#[fg=blue]{}#[fg=white]:#[fg=red]{}",&run.status,&run.result),
-                            "passed"    => println!("#[fg=blue]{}#[fg=white]:#[fg=green]{}",&run.status,&run.result),
-                            _           => println!("#[fg=blue]{}#[fg=white]:{}",&run.status,&run.result)
+                            "failed"    => println!("#[fg=blue,bright]{}#[fg=white]:#[fg=red,bold]{}",&run.status,&run.result),
+                            "passed"    => println!("#[fg=blue,bright]{}#[fg=white]:#[fg=green,bold,bright]{}",&run.status,&run.result),
+                            _           => println!("#[fg=blue,bright]{}#[fg=white]:{}",&run.status,&run.result)
                         }
                     } else {
                         match run.result.as_ref() {
