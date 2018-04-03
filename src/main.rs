@@ -1,6 +1,7 @@
 extern crate config as config_rs;
 extern crate curl;
 extern crate serde_json;
+extern crate colored;
 #[macro_use]
 extern crate serde_derive;
 
@@ -16,6 +17,7 @@ const CONFIG_PREFIX: &str = "WERCKER";
 
 
 fn main() {
+    use colored::*;
     // first get config
     let settings =
         match env::args().nth(1) {
@@ -41,7 +43,12 @@ fn main() {
                 &run.user.meta.username.to_lowercase() == &settings["author"].to_lowercase()
             }) {
                 // print out status and result
-                Some(run) => println!("{}:{}",&run.status,&run.result),
+                Some(run) => {
+                    match run.result.as_ref() {
+                        "failed" => println!("{}:{}",&run.status.blue(),&run.result.red()),
+                        _ => println!("{}:{}",&run.status.blue(),&run.result.green())
+                    }
+                },
                 None => print!("{}","None Found")
 
             }
