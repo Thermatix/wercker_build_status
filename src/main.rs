@@ -44,7 +44,7 @@ fn main() {
             }) {
                 // print out status and result
                 Some(run) => {
-                    if &settings["tmux"] == &"true".to_string() {
+                    if settings.contains_key("tmux") && &settings["tmux"] == &"true".to_string() {
                         match run.result.as_ref() {
                             "failed"    => println!("##[fg=red,bold]{}",&run.result),
                             "passed"    => println!("#[fg=green,bold,bright]{}",&run.result),
