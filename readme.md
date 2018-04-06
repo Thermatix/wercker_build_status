@@ -40,11 +40,10 @@ the config options with `WERCKER_` and capitalize the key name.
 The output of the tool is like this:
 
 ```
-status:result
+status|result
 ```
-an example being:
+examples being:
 
-```
-finished:failed
-```
-
++ `running`
++ `passed`
++ `failed`
