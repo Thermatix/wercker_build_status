@@ -18,8 +18,8 @@ pub fn set_up(token: &String) -> Easy {
 }
 
 
-pub fn get_runs(curl: &mut Easy, pipline_id: &String)  -> String {
-    let url = urls::get::runs(&pipline_id);
+pub fn get_runs(curl: &mut Easy, pipline_id: &String, author: &String)  -> String {
+    let url = urls::get::runs(&pipline_id, &author);
     get(curl,url )
 }
 
