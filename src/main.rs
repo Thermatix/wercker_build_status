@@ -37,7 +37,7 @@ fn main() {
             // set up curl client
             let mut client = client::set_up(&settings["token"]);
             // get last 20 runs (max you an get) and deserialize json into structs
-            let runs: Runs = serde_json::from_str(client::get_runs(&mut client,&settings["pipeline_id"]).as_str()).unwrap();
+            let runs: Runs = serde_json::from_str(client::get_runs(&mut client,&settings["pipeline_id"], &settings["author"]).as_str()).unwrap();
             // find first matching username as most recent is first
             match runs.iter().find( |run| {
                 &run.user.meta.username.to_lowercase() == &settings["author"].to_lowercase()

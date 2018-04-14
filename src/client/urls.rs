@@ -3,8 +3,8 @@ pub mod get {
 
     use super::build_url;
 
-   pub fn runs(pipline_id: &String) -> String {
-        format!("{}?pipelineId={}",build_url("runs"),&pipline_id)
+   pub fn runs(pipline_id: &String,author: &String) -> String {
+        format!("{}?pipelineId={}&author={}",build_url("runs"),&pipline_id, &author)
     }
 }
 
